@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0c10" />
+<title>MS Biotech IBMS · Curriculum Planner — Himanshu Pundir</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d9e75'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-family='Georgia' font-size='30' fill='white' font-weight='600' font-style='italic'%3EMS%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..600;1,9..144,300..500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #faf8f3; --bg-2: #ffffff; --bg-3: #f1ede4; --bg-4: #e8e2d3;
+    --line: rgba(0,0,0,0.08); --line-2: rgba(0,0,0,0.14);
+    --text: #1a1a1a; --text-dim: #555a64; --text-faint: #8a8e98;
+    --accent: #0f7a58;
+    --accent-soft: rgba(15,122,88,0.10);
+    --industry: #b87a18;
+    --industry-soft: rgba(184,122,24,0.12);
+    --research: #4f4794;
+    --research-soft: rgba(79,71,148,0.12);
+    --filler: #085041;
+    --filler-soft: rgba(8,80,65,0.10);
+    --warn: #b87a18; --bad: #a32d2d; --good: #0f7a58;
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  [data-theme="dark"] {
+    --bg: #0e0f12; --bg-2: #16181e; --bg-3: #1d2028; --bg-4: #252934;
+    --line: rgba(255,255,255,0.08); --line-2: rgba(255,255,255,0.14);
+    --text: #f0eee8; --text-dim: #a4a8b3; --text-faint: #6b6f7a;
+    --accent: #1d9e75; --accent-soft: rgba(29,158,117,0.16);
+    --industry: #ef9f27; --industry-soft: rgba(239,159,39,0.14);
+    --research: #a8a2ea; --research-soft: rgba(168,162,234,0.16);
+    --filler: #4dbe96; --filler-soft: rgba(77,190,150,0.14);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body {
+    min-height: 100vh; min-height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .app { max-width: 920px; margin: 0 auto; padding: 32px 22px 60px; }
+
+  /* HEADER — letterhead style */
+  .doc-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding-bottom: 18px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+    gap: 16px; flex-wrap: wrap;
+  }
+  .doc-head-left { flex: 1; min-width: 240px; }
+  .doc-meta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 400; font-size: clamp(26px, 4.5vw, 36px);
+    line-height: 1.1; margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+  h1 em { font-style: italic; font-weight: 300; color: var(--text-dim); }
+  .doc-author {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14px; color: var(--text-dim); font-style: italic;
+  }
+  .doc-head-right {
+    display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-start;
+  }
+  .doc-head-right button {
+    background: transparent;
+    border: 0.5px solid var(--line-2); color: var(--text-dim);
+    padding: 6px 12px; border-radius: 999px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10.5px; cursor: pointer;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    transition: all 0.15s ease;
+  }
+  .doc-head-right button:hover { color: var(--text); border-color: var(--text-dim); }
+
+  /* INTRO BLOCK — for Dr. Kyle */
+  .intro {
+    background: var(--bg-2);
+    border: 0.5px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-md);
+    position: relative;
+  }
+  .intro-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px; font-weight: 500;
+  }
+  .intro p {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 15px; line-height: 1.65; margin: 0 0 10px; color: var(--text);
+  }
+  .intro p:last-child { margin-bottom: 0; }
+  .intro p em { font-style: italic; color: var(--text-dim); }
+  .intro strong { font-weight: 600; }
+
+  /* PROFILE STRIP — quick context */
+  .profile-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    padding: 18px 0;
+    border-top: 0.5px solid var(--line);
+    margin-top: 16px;
+  }
+  .profile-cell { font-size: 12.5px; }
+  .profile-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 3px;
+  }
+  .profile-val { color: var(--text); font-family: 'Fraunces', Georgia, serif; }
+
+  /* SUMMARY DASHBOARD */
+  .summary {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 14px;
+    padding: 22px 24px;
+    background: var(--bg-2);
+    border: 0.5px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-md);
+  }
+  @media (max-width: 600px) {
+    .summary { grid-template-columns: 1fr; gap: 18px; padding: 18px 20px; }
+  }
+  .summary-cell { display: flex; flex-direction: column; gap: 6px; }
+  .summary-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .summary-big {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300; font-size: 32px; line-height: 1;
+    letter-spacing: -0.02em;
+    transition: color 0.3s ease;
+  }
+  .summary-big.warn { color: var(--warn); }
+  .summary-big.bad { color: var(--bad); }
+  .summary-big.good { color: var(--good); }
+  .summary-bar {
+    height: 4px; background: var(--bg-3); border-radius: 2px;
+    overflow: hidden; margin-top: 4px;
+  }
+  .summary-bar-fill { height: 100%; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease; }
+  .summary-meter-labels {
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9.5px; color: var(--text-faint);
+    letter-spacing: 0.06em; text-transform: uppercase; margin-top: 3px;
+  }
+
+  /* FEEDBACK BANNER */
+  .feedback {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14px; line-height: 1.55;
+    margin-bottom: 26px;
+    border: 0.5px solid;
+  }
+  .feedback.ok {
+    background: var(--accent-soft); color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .feedback.warn {
+    background: var(--industry-soft); color: var(--industry);
+    border-color: color-mix(in srgb, var(--industry) 30%, transparent);
+  }
+  .feedback.bad {
+    background: color-mix(in srgb, var(--bad) 10%, transparent);
+    color: var(--bad);
+    border-color: color-mix(in srgb, var(--bad) 30%, transparent);
+  }
+
+  /* SECTIONS */
+  .section { margin-bottom: 32px; }
+  .section-head { margin-bottom: 14px; padding-bottom: 8px; border-bottom: 0.5px solid var(--line); }
+  .section-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .section-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500; font-size: 18px; margin: 2px 0 0;
+    letter-spacing: -0.01em;
+  }
+  .section-title em { font-style: italic; color: var(--text-dim); font-weight: 400; }
+
+  /* COURSE ROW */
+  .course-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 16px;
+    background: var(--bg-2);
+    border: 0.5px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .course-row:hover {
+    border-color: var(--line-2);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .course-row.locked {
+    background: var(--bg-3); cursor: default;
+  }
+  .course-row.locked:hover { transform: none; box-shadow: none; }
+  .course-row.selected {
+    border: 1.5px solid var(--accent);
+    padding: 12.5px 15.5px;
+    background: var(--accent-soft);
+  }
+
+  .check {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border: 1px solid var(--line-2); border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-2);
+    transition: all 0.15s ease;
+  }
+  .check.checked { background: var(--accent); border-color: var(--accent); }
+  .check.checked::after {
+    content: ''; width: 5px; height: 9px;
+    border-right: 2px solid white; border-bottom: 2px solid white;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .check.locked { background: var(--text-faint); border-color: var(--text-faint); }
+  .check.locked::after {
+    content: ''; width: 5px; height: 9px;
+    border-right: 2px solid white; border-bottom: 2px solid white;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .radio {
+    width: 16px; height: 16px; flex-shrink: 0;
+    border: 1px solid var(--line-2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg-2);
+    transition: all 0.15s ease;
+  }
+  .radio.checked { border: 5px solid var(--accent); }
+
+  .course-info { flex: 1; min-width: 0; }
+  .course-code {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14px; font-weight: 500; margin: 0;
+    line-height: 1.4;
+  }
+  .course-code-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; color: var(--text-dim);
+    margin-right: 6px; letter-spacing: 0.04em;
+  }
+  .course-desc {
+    font-size: 12px; color: var(--text-dim);
+    margin: 3px 0 0; line-height: 1.45; font-style: italic;
+  }
+  .course-credits {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 6px;
+    background: var(--bg-3); color: var(--text-dim);
+    flex-shrink: 0; min-width: 48px; text-align: center;
+    letter-spacing: 0.04em;
+  }
+  .badge {
+    display: inline-block; margin-left: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px; padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+    vertical-align: middle;
+  }
+  .badge-i { background: var(--industry-soft); color: var(--industry); }
+  .badge-r { background: var(--research-soft); color: var(--research); }
+  .badge-f { background: var(--filler-soft); color: var(--filler); }
+  .badge-c { background: var(--accent-soft); color: var(--accent); }
+
+  /* SLIDER ROW */
+  .slider-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 16px;
+    background: var(--bg-2);
+    border: 0.5px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    transition: all 0.15s ease;
+  }
+  .slider-row.active {
+    border: 1.5px solid var(--accent);
+    padding: 12.5px 15.5px;
+    background: var(--accent-soft);
+  }
+  .slider-info { flex: 1; min-width: 0; }
+  .slider-ctrl { display: flex; align-items: center; gap: 10px; min-width: 150px; }
+  .slider-ctrl input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none; appearance: none;
+    height: 4px; background: var(--bg-3); border-radius: 2px;
+    outline: none;
+  }
+  .slider-ctrl input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px;
+    background: var(--accent); border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 0.5px var(--line-2);
+  }
+  .slider-ctrl input[type="range"]::-moz-range-thumb {
+    width: 18px; height: 18px;
+    background: var(--accent); border-radius: 50%;
+    cursor: pointer; border: 2px solid var(--bg);
+  }
+  .slider-val {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; font-weight: 500; min-width: 36px; text-align: right;
+    color: var(--text);
+  }
+
+  /* PRESETS */
+  .actions {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 18px 0 0; margin-top: 12px;
+    border-top: 0.5px solid var(--line);
+  }
+  .actions button {
+    background: var(--bg-2); border: 0.5px solid var(--line-2);
+    color: var(--text-dim);
+    padding: 9px 16px; border-radius: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; cursor: pointer;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    transition: all 0.15s ease;
+  }
+  .actions button:hover { color: var(--text); border-color: var(--text-dim); background: var(--bg-3); }
+  .actions button.primary {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+  .actions button.primary:hover { opacity: 0.9; }
+
+  /* QUESTIONS BLOCK FOR DR KYLE */
+  .questions {
+    background: var(--bg-2);
+    border: 0.5px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+  .questions-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 16px; font-weight: 500; margin: 0 0 12px;
+  }
+  .questions ol {
+    margin: 0; padding-left: 20px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14px; line-height: 1.6;
+  }
+  .questions li { margin-bottom: 8px; color: var(--text); }
+  .questions li:last-child { margin-bottom: 0; }
+
+  /* FOOTER */
+  .doc-foot {
+    margin-top: 36px; padding-top: 18px;
+    border-top: 0.5px solid var(--line);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; color: var(--text-faint);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .doc-foot a { color: var(--text-dim); text-decoration: none; border-bottom: 0.5px dotted var(--line-2); }
+  .doc-foot a:hover { color: var(--accent); }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    .doc-head-right, .actions { display: none; }
+    .course-row, .slider-row { break-inside: avoid; }
+    .summary, .intro, .questions { box-shadow: none; }
+  }
+
+  @media (max-width: 480px) {
+    .app { padding: 22px 14px 50px; }
+    .intro { padding: 18px 18px; }
+    .summary { padding: 16px 16px; }
+    .course-row, .slider-row { padding: 11px 13px; }
+    .course-code { font-size: 13px; }
+    .summary-big { font-size: 26px; }
+    .questions { padding: 16px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="doc-head">
+    <div class="doc-head-left">
+      <p class="doc-meta">MS Biotechnology · Industrial &amp; Biomedical Sciences · Curriculum Plan</p>
+      <h1>Building <em>thirty</em> credits, on purpose.</h1>
+      <p class="doc-author">Himanshu Pundir · UNH Manchester · Fall 2026 cohort · UNH ID 967086971</p>
+    </div>
+    <div class="doc-head-right">
+      <button id="theme-toggle">◐ theme</button>
+      <button onclick="window.print()">⎙ print / pdf</button>
+    </div>
+  </header>
+
+  <section class="intro">
+    <p class="intro-label">For Dr. Kyle MacLea — program coordinator</p>
+    <p>Dr. MacLea, this is the curriculum plan I'm currently mapping for the MS Biotechnology IBMS program. The interactive layout is meant for two things: <strong>to give you visibility into how I'm thinking about the 30-credit composition</strong>, and <strong>to surface a few feasibility questions that the catalog alone doesn't answer</strong>.</p>
+    <p>My goal is to combine the <strong>9-credit BIOT 895 industrial co-op</strong> with <strong>research credentials through BIOT 893 directed research</strong> alongside Dr. Suh's lab — so the plan deliberately tries to balance industry weight and research depth rather than maximising either alone. The slider for variable BIOT 893 credits is how I'm trying to bridge the math without going over 30.</p>
+    <p><em>Feel free to load the presets, adjust the sliders, and the credit totals + balance meters update live. Your guidance on the open questions at the bottom would be enormously helpful before I finalise registration.</em></p>
+    <div class="profile-strip">
+      <div class="profile-cell"><div class="profile-label">Background</div><div class="profile-val">BSc Hons Microbiology + PGD Bioinformatics</div></div>
+      <div class="profile-cell"><div class="profile-label">Publication</div><div class="profile-val">DOI 10.30574/wjbphs.2025.24.1.0914</div></div>
+      <div class="profile-cell"><div class="profile-label">Lab interest</div><div class="profile-val">Suh Lab · iPSC · epigenetic reprogramming</div></div>
+      <div class="profile-cell"><div class="profile-label">Career target</div><div class="profile-val">US biotech R&amp;D · co-op → FT</div></div>
+    </div>
+  </section>
+
+  <!-- LIVE DASHBOARD -->
+  <section class="summary">
+    <div class="summary-cell">
+      <span class="summary-label">Total credits</span>
+      <span class="summary-big" id="credits-num">13 / 30</span>
+      <div class="summary-bar"><div class="summary-bar-fill" id="credits-bar" style="width: 43%; background: #4a6cf7;"></div></div>
+    </div>
+    <div class="summary-cell">
+      <span class="summary-label">Industry weight</span>
+      <span class="summary-big" id="ind-num">23%</span>
+      <div class="summary-bar"><div class="summary-bar-fill" id="ind-bar" style="width: 23%; background: var(--industry);"></div></div>
+      <div class="summary-meter-labels"><span>course-only</span><span>field-based</span></div>
+    </div>
+    <div class="summary-cell">
+      <span class="summary-label">Research depth</span>
+      <span class="summary-big" id="res-num">18%</span>
+      <div class="summary-bar"><div class="summary-bar-fill" id="res-bar" style="width: 18%; background: var(--research);"></div></div>
+      <div class="summary-meter-labels"><span>industry</span><span>publication-track</span></div>
+    </div>
+  </section>
+
+  <div class="feedback ok" id="feedback">Pick a capstone path, then add electives. Use the BIOT 893 slider to land on exactly 30 credits.</div>
+
+  <!-- REQUIRED CORE -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-num">01 · Required core</span>
+      <h2 class="section-title">Foundation <em>— 13 credits, locked for all IBMS students</em></h2>
+    </div>
+    <div id="core-list"></div>
+  </section>
+
+  <!-- CAPSTONE -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-num">02 · Capstone path</span>
+      <h2 class="section-title">Choose one <em>— 6 to 9 credits</em></h2>
+    </div>
+    <div id="cap-list"></div>
+  </section>
+
+  <!-- VARIABLE RESEARCH -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-num">03 · Variable-credit research</span>
+      <h2 class="section-title">Adjust to fill the gap <em>— BIOT 893 alongside capstone</em></h2>
+    </div>
+    <div id="var-list"></div>
+  </section>
+
+  <!-- ELECTIVES -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-num">04 · Electives</span>
+      <h2 class="section-title">Three-credit specialised courses</h2>
+    </div>
+    <div id="elec-list"></div>
+  </section>
+
+  <!-- FILLERS -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-num">05 · One-credit fillers</span>
+      <h2 class="section-title">Top-up to reach 30 exactly</h2>
+    </div>
+    <div id="fill-list"></div>
+  </section>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="primary" onclick="loadPreset('balanced')">★ Load my proposed plan</button>
+    <button onclick="loadPreset('coop')">Max-coop variant</button>
+    <button onclick="loadPreset('research')">Research-leaning variant</button>
+    <button onclick="resetPlan()">Reset</button>
+  </div>
+
+  <!-- QUESTIONS FOR DR KYLE -->
+  <section class="questions" style="margin-top: 40px;">
+    <h3 class="questions-title">Open questions for your review</h3>
+    <ol>
+      <li>Can <strong>BIOT 895 (9-credit co-op)</strong> and <strong>BIOT 893 (2 cr directed research)</strong> realistically run concurrently in the same year, or does co-op semester scheduling preclude it?</li>
+      <li>If I'm enrolled in PSCL (BIOT 772/872) with Dr. Suh in Fall 2026, does a Spring 2027 BIOT 893 directed research with him count toward the program's research credit allowance?</li>
+      <li>Are <strong>BIOT 897 / BIOT 898 (Special Topics, 1 cr)</strong> reliably offered each year, or are they advisor-dependent?</li>
+      <li>For an international student targeting Fall 2027 co-op, what is the typical CPT-application lead time through DSO that I should plan for?</li>
+      <li>Do you have any guidance on the elective combination most aligned with Suh Lab work and ARMI/BioFabUSA member-company hiring patterns?</li>
+    </ol>
+  </section>
+
+  <footer class="doc-foot">
+    <span>Last updated: <span id="last-updated">—</span></span>
+    <span>Plan portable · loads any browser · auto-saves</span>
+  </footer>
+</div>
+
+<script>
+const CORE = [
+  { code: 'BIOT 877', name: 'Molecular Biology + Lab', cr: 3, ind: 1, res: 2 },
+  { code: 'BIOT 853', name: 'Cell Culture + Lab', cr: 3, ind: 2, res: 2 },
+  { code: 'BIOT 866', name: 'Protein & Immunological Techniques + Lab', cr: 3, ind: 2, res: 2 },
+  { code: 'BIOT 825', name: 'Biotech Products & Regulation', cr: 3, ind: 3, res: 0 },
+  { code: 'BIOT 896', name: 'Graduate Seminar in Biotechnology', cr: 1, ind: 1, res: 1 }
+];
+const CAPSTONES = [
+  { id: 'cap-coop', code: 'BIOT 895', name: '6-month industrial co-op', cr: 9, ind: 10, res: 2, desc: '40 hrs/week paid placement at biotech / biopharma partner.' },
+  { id: 'cap-int', code: 'BIOT 892', name: 'Industry internship', cr: 6, ind: 7, res: 2, desc: 'Shorter-format industry placement; flexible duration.' },
+  { id: 'cap-app', code: 'BIOT 891', name: 'Applied research at workplace', cr: 6, ind: 5, res: 4, desc: 'Applied research conducted at current employer site.' },
+  { id: 'cap-res', code: 'BIOT 893', name: 'Directed graduate research (faculty lab)', cr: 6, ind: 1, res: 9, desc: 'Faculty-mentored research, deliverable poster or paper.' }
+];
+const VARIABLES = [
+  { id: 'v1', code: 'BIOT 893', name: 'Directed research alongside capstone', desc: 'Variable 1–4 cr, scaled to advisor agreement.', min: 0, max: 4, indPer: 0.3, resPer: 1.5 }
+];
+const ELECTIVES = [
+  { id: 'e1', code: 'BIOT 855', name: 'Advanced Therapies (gene, cell, mRNA)', cr: 3, ind: 4, res: 5, type: 'r' },
+  { id: 'e2', code: 'BIOT 875', name: 'Biopharmaceutical Production Processes', cr: 3, ind: 6, res: 1, type: 'i' },
+  { id: 'e3', code: 'BIOT 850', name: 'Cancer Biology: Bench to Therapeutics', cr: 3, ind: 2, res: 5, type: 'r' },
+  { id: 'e4', code: 'BIOT 837', name: 'Microbial Genomics', cr: 3, ind: 2, res: 5, type: 'r' },
+  { id: 'e5', code: 'BIOT 870', name: 'Stem Cell & Biomaterials Engineering Lab', cr: 3, ind: 4, res: 5, type: 'r' },
+  { id: 'e6', code: 'BIOT 880', name: 'Microscopy & Image Analysis', cr: 3, ind: 3, res: 4, type: 'r' },
+  { id: 'e7', code: 'BIOT 860', name: 'Numerical & Statistical Analysis in Biotech', cr: 3, ind: 3, res: 4, type: 'r' },
+  { id: 'e8', code: 'BIOT 840', name: 'Antibiotic Discovery Research', cr: 3, ind: 2, res: 5, type: 'r' },
+  { id: 'e9', code: 'BIOT 804', name: 'New & Emerging Biotechnology', cr: 3, ind: 4, res: 2, type: 'i' }
+];
+const FILLERS = [
+  { id: 'f1', code: 'BIOT 889', name: 'Biotech Career Planning seminar', cr: 1, ind: 2, res: 0 },
+  { id: 'f2', code: 'BIOT 897', name: 'Special Topics in Biotechnology', cr: 1, ind: 1, res: 1 },
+  { id: 'f3', code: 'BIOT 898', name: 'Special Laboratory Topics', cr: 1, ind: 1, res: 2 }
+];
+
+const STORAGE_KEY = 'himanshu-course-planner-v2';
+const THEME_KEY = 'himanshu-planner-theme';
+const state = { capstone: null, electives: new Set(), fillers: new Set(), varCr: { v1: 0 } };
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      state.capstone = p.capstone || null;
+      state.electives = new Set(p.electives || []);
+      state.fillers = new Set(p.fillers || []);
+      state.varCr = p.varCr || { v1: 0 };
+    } else {
+      // Default to the user's "balanced" preset for first load
+      state.capstone = 'cap-coop';
+      state.electives = new Set(['e5', 'e7']);
+      state.varCr = { v1: 2 };
+      save();
+    }
+  } catch (e) {}
+  const theme = localStorage.getItem(THEME_KEY);
+  if (theme) document.documentElement.setAttribute('data-theme', theme);
+}
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      capstone: state.capstone,
+      electives: [...state.electives],
+      fillers: [...state.fillers],
+      varCr: state.varCr,
+      savedAt: new Date().toISOString()
+    }));
+    const u = document.getElementById('last-updated');
+    if (u) u.textContent = new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+  } catch (e) {}
+}
+
+function pickCap(id) { state.capstone = state.capstone === id ? null : id; save(); update(); }
+function toggleElec(id) { state.electives.has(id) ? state.electives.delete(id) : state.electives.add(id); save(); update(); }
+function toggleFill(id) { state.fillers.has(id) ? state.fillers.delete(id) : state.fillers.add(id); save(); update(); }
+function setVar(id, v) { state.varCr[id] = parseInt(v); save(); update(); }
+function resetPlan() {
+  state.capstone = null; state.electives.clear(); state.fillers.clear(); state.varCr = { v1: 0 };
+  save(); update();
+}
+function loadPreset(p) {
+  state.capstone = null; state.electives.clear(); state.fillers.clear(); state.varCr = { v1: 0 };
+  if (p === 'coop') {
+    state.capstone = 'cap-coop'; state.electives = new Set(['e2', 'e9']); state.varCr.v1 = 2;
+  } else if (p === 'balanced') {
+    state.capstone = 'cap-coop'; state.electives = new Set(['e5', 'e7']); state.varCr.v1 = 2;
+  } else if (p === 'research') {
+    state.capstone = 'cap-int'; state.electives = new Set(['e3', 'e4', 'e5']); state.varCr.v1 = 2;
+  }
+  save(); update();
+}
+
+function renderCore() {
+  document.getElementById('core-list').innerHTML = CORE.map(c => `
+    <div class="course-row locked">
+      <div class="check locked"></div>
+      <div class="course-info">
+        <p class="course-code"><span class="course-code-num">${c.code}</span>${escapeHtml(c.name)}<span class="badge badge-c">core</span></p>
+      </div>
+      <div class="course-credits">${c.cr} cr</div>
+    </div>`).join('');
+}
+function renderCap() {
+  document.getElementById('cap-list').innerHTML = CAPSTONES.map(c => {
+    const sel = state.capstone === c.id;
+    return `<div class="course-row ${sel ? 'selected' : ''}" onclick="pickCap('${c.id}')">
+      <div class="radio ${sel ? 'checked' : ''}"></div>
+      <div class="course-info">
+        <p class="course-code"><span class="course-code-num">${c.code}</span>${escapeHtml(c.name)}</p>
+        <p class="course-desc">${escapeHtml(c.desc)} · industry ${c.ind}/10 · research ${c.res}/10</p>
+      </div>
+      <div class="course-credits">${c.cr} cr</div>
+    </div>`;
+  }).join('');
+}
+function renderVar() {
+  document.getElementById('var-list').innerHTML = VARIABLES.map(v => {
+    const cur = state.varCr[v.id] || 0;
+    return `<div class="slider-row ${cur > 0 ? 'active' : ''}">
+      <div class="slider-info">
+        <p class="course-code"><span class="course-code-num">${v.code}</span>${escapeHtml(v.name)}<span class="badge badge-r">research</span></p>
+        <p class="course-desc">${escapeHtml(v.desc)}</p>
+      </div>
+      <div class="slider-ctrl">
+        <input type="range" min="${v.min}" max="${v.max}" step="1" value="${cur}" oninput="setVar('${v.id}', this.value)" />
+        <span class="slider-val">${cur} cr</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderElec() {
+  document.getElementById('elec-list').innerHTML = ELECTIVES.map(e => {
+    const sel = state.electives.has(e.id);
+    const badge = e.type === 'i' ? '<span class="badge badge-i">industry</span>' : '<span class="badge badge-r">research</span>';
+    return `<div class="course-row ${sel ? 'selected' : ''}" onclick="toggleElec('${e.id}')">
+      <div class="check ${sel ? 'checked' : ''}"></div>
+      <div class="course-info">
+        <p class="course-code"><span class="course-code-num">${e.code}</span>${escapeHtml(e.name)}${badge}</p>
+      </div>
+      <div class="course-credits">${e.cr} cr</div>
+    </div>`;
+  }).join('');
+}
+function renderFill() {
+  document.getElementById('fill-list').innerHTML = FILLERS.map(f => {
+    const sel = state.fillers.has(f.id);
+    return `<div class="course-row ${sel ? 'selected' : ''}" onclick="toggleFill('${f.id}')">
+      <div class="check ${sel ? 'checked' : ''}"></div>
+      <div class="course-info">
+        <p class="course-code"><span class="course-code-num">${f.code}</span>${escapeHtml(f.name)}<span class="badge badge-f">filler</span></p>
+      </div>
+      <div class="course-credits">${f.cr} cr</div>
+    </div>`;
+  }).join('');
+}
+
+function update() {
+  let total = CORE.reduce((s, c) => s + c.cr, 0);
+  let ind = CORE.reduce((s, c) => s + c.ind, 0);
+  let res = CORE.reduce((s, c) => s + c.res, 0);
+  if (state.capstone) {
+    const c = CAPSTONES.find(x => x.id === state.capstone);
+    total += c.cr; ind += c.ind * 2; res += c.res * 2;
+  }
+  state.electives.forEach(id => {
+    const e = ELECTIVES.find(x => x.id === id);
+    total += e.cr; ind += e.ind; res += e.res;
+  });
+  state.fillers.forEach(id => {
+    const f = FILLERS.find(x => x.id === id);
+    total += f.cr; ind += f.ind; res += f.res;
+  });
+  VARIABLES.forEach(v => {
+    const cr = state.varCr[v.id] || 0;
+    total += cr; ind += Math.round(cr * v.indPer); res += Math.round(cr * v.resPer);
+  });
+
+  const cn = document.getElementById('credits-num');
+  cn.textContent = total + ' / 30';
+  cn.className = 'summary-big' + (total === 30 ? ' good' : total > 30 ? ' bad' : ' warn');
+  const cb = document.getElementById('credits-bar');
+  cb.style.width = Math.min(100, (total / 30) * 100) + '%';
+  cb.style.background = total === 30 ? 'var(--accent)' : total > 30 ? 'var(--bad)' : '#4a6cf7';
+
+  const indPct = Math.min(100, Math.round((ind / 40) * 100));
+  const resPct = Math.min(100, Math.round((res / 40) * 100));
+  document.getElementById('ind-num').textContent = indPct + '%';
+  document.getElementById('res-num').textContent = resPct + '%';
+  document.getElementById('ind-bar').style.width = indPct + '%';
+  document.getElementById('res-bar').style.width = resPct + '%';
+
+  const fb = document.getElementById('feedback');
+  let msg = '', cls = '';
+  if (!state.capstone) { msg = 'Pick a capstone path first — co-op gives the strongest job-conversion outcome.'; cls = 'warn'; }
+  else if (total < 30) { msg = `${30 - total} credit${30 - total === 1 ? '' : 's'} short. Adjust the BIOT 893 slider or add electives / fillers.`; cls = 'warn'; }
+  else if (total > 30) { msg = `Over by ${total - 30} credits — drop something to balance.`; cls = 'bad'; }
+  else {
+    if (indPct >= 50 && resPct >= 40) msg = '✓ Strong balance — co-op for industry experience plus research-flavored work. This profile maps cleanly to entry-level US biotech R&D roles.';
+    else if (indPct >= 50) msg = '✓ Industry-heavy plan at exactly 30 credits — best for FT placement, lighter on research credentials.';
+    else if (resPct >= 50) msg = '✓ Research-heavy plan at exactly 30 credits — strong for PhD pivot, less optimised for FT industry placement.';
+    else msg = '✓ Plan complete at exactly 30 credits.';
+    cls = 'ok';
+  }
+  fb.className = 'feedback ' + cls;
+  fb.textContent = msg;
+
+  renderCap(); renderVar(); renderElec(); renderFill();
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(THEME_KEY, next);
+});
+
+load();
+renderCore();
+update();
+</script>
+</body>
+</html>

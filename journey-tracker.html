@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0b0c10" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Himanshu · Full Journey Tracker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231d9e75'/%3E%3Cpath d='M19 33 L28 42 L45 23' stroke='white' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..600;1,9..144,300..500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0c10; --bg-2: #14161c; --bg-3: #1c1f28;
+    --line: rgba(255,255,255,0.08); --line-2: rgba(255,255,255,0.14);
+    --text: #f5f5f3; --text-dim: #a4a8b3; --text-faint: #6b6f7a;
+    --accent: #1d9e75; --accent-glow: rgba(29,158,117,0.25);
+    --warn: #ef9f27; --bad: #d75050;
+    --tag-priority-bg: rgba(239,159,39,0.14); --tag-priority-fg: #f0b65a;
+    --tag-visa-bg: rgba(215,80,80,0.14); --tag-visa-fg: #e88080;
+    --tag-research-bg: rgba(127,119,221,0.16); --tag-research-fg: #a8a2ea;
+    --tag-done-bg: rgba(29,158,117,0.16); --tag-done-fg: #4dbe96;
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  }
+  [data-theme="light"] {
+    --bg: #faf8f3; --bg-2: #ffffff; --bg-3: #f1ede4;
+    --line: rgba(0,0,0,0.08); --line-2: rgba(0,0,0,0.14);
+    --text: #1a1a1a; --text-dim: #555a64; --text-faint: #8a8e98;
+    --accent: #0f7a58; --accent-glow: rgba(15,122,88,0.18);
+    --warn: #b87a18; --bad: #a32d2d;
+    --tag-priority-bg: rgba(184,122,24,0.12); --tag-priority-fg: #8a5a14;
+    --tag-visa-bg: rgba(163,45,45,0.10); --tag-visa-fg: #791f1f;
+    --tag-research-bg: rgba(60,52,137,0.10); --tag-research-fg: #3c3489;
+    --tag-done-bg: rgba(15,122,88,0.12); --tag-done-fg: #085041;
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    font-feature-settings: "ss01", "ss02";
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  body {
+    min-height: 100vh; min-height: 100dvh;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background-image:
+      radial-gradient(ellipse 70% 50% at 80% 0%, var(--accent-glow), transparent 50%),
+      radial-gradient(ellipse 50% 40% at 0% 90%, var(--accent-glow), transparent 60%);
+    background-attachment: fixed;
+  }
+  .app { max-width: 880px; margin: 0 auto; padding: 24px 18px 80px; }
+
+  .header { margin-bottom: 24px; }
+  .header-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint);
+  }
+  .header-top button {
+    background: transparent; border: 0.5px solid var(--line-2); color: var(--text-dim);
+    padding: 6px 10px; border-radius: 999px; font-size: 11px;
+    font-family: inherit; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .header-top button:hover { color: var(--text); border-color: var(--text-dim); }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300; font-size: clamp(28px, 6vw, 44px);
+    line-height: 1.05; letter-spacing: -0.02em; margin: 0 0 6px; font-style: italic;
+  }
+  h1 em { font-style: normal; font-weight: 600; color: var(--accent); }
+  .subtitle {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em;
+  }
+
+  .hero {
+    background: var(--bg-2); border: 0.5px solid var(--line);
+    border-radius: 24px; padding: 28px 26px 22px; margin-bottom: 16px;
+    position: relative; overflow: hidden; box-shadow: var(--shadow-md);
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 240px; height: 240px;
+    background: radial-gradient(circle at top right, var(--accent-glow), transparent 70%);
+    pointer-events: none;
+  }
+  .hero-stats { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+  .hero-pct {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 200; font-size: clamp(56px, 14vw, 96px);
+    line-height: 0.9; letter-spacing: -0.04em;
+  }
+  .hero-pct sup { font-size: 0.4em; font-weight: 400; color: var(--text-dim); margin-left: 4px; vertical-align: super; }
+  .hero-frac {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 13px; color: var(--text-dim); letter-spacing: 0.04em;
+  }
+  .hero-bar { height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
+  .hero-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--warn)));
+    border-radius: 2px; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .phase-pills {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 14px 0 4px; margin: 0 -26px -4px;
+    padding-left: 26px; padding-right: 26px;
+    scrollbar-width: none;
+  }
+  .phase-pills::-webkit-scrollbar { display: none; }
+  .pill {
+    flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px 5px 8px;
+    border: 0.5px solid var(--line-2); border-radius: 999px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10.5px; color: var(--text-dim);
+    letter-spacing: 0.04em; white-space: nowrap;
+  }
+  .pill-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .pill.complete { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+  .phases { margin-top: 22px; }
+  .phase {
+    background: var(--bg-2); border: 0.5px solid var(--line);
+    border-radius: 18px; margin-bottom: 10px; overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+  .phase.complete { border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); }
+  .phase-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; cursor: pointer; user-select: none;
+  }
+  .phase-head:hover { background: color-mix(in srgb, var(--bg-3) 50%, transparent); }
+  .phase-marker { width: 4px; height: 36px; border-radius: 2px; flex-shrink: 0; }
+  .phase-info { flex: 1; min-width: 0; }
+  .phase-name {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500; font-size: 17px; margin: 0 0 2px;
+    letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .phase-dates {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; color: var(--text-faint);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .phase-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .phase-pct {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em;
+    min-width: 32px; text-align: right;
+  }
+  .phase-count {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; color: var(--text-dim);
+    background: var(--bg-3); padding: 4px 9px; border-radius: 999px; letter-spacing: 0.04em;
+  }
+  .phase-count.complete { background: var(--tag-done-bg); color: var(--tag-done-fg); }
+  .chev { color: var(--text-faint); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); flex-shrink: 0; }
+  .chev.open { transform: rotate(90deg); }
+
+  .tasks {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tasks.open { max-height: 8000px; }
+  .tasks-inner { padding: 4px 18px 16px; border-top: 0.5px solid var(--line); }
+  .anchor {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic; font-size: 13px; color: var(--text-dim);
+    margin: 14px 0 8px; line-height: 1.5;
+    padding-left: 18px; border-left: 2px solid var(--line-2);
+  }
+  .task {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 11px 0; cursor: pointer;
+    border-bottom: 0.5px solid var(--line);
+    transition: padding 0.15s ease;
+  }
+  .task:last-child { border-bottom: none; }
+  .task:hover { padding-left: 4px; }
+  .cb {
+    width: 18px; height: 18px; border: 1px solid var(--line-2);
+    border-radius: 5px; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s ease; background: var(--bg-2);
+  }
+  .cb.checked { background: var(--accent); border-color: var(--accent); }
+  .cb.checked::after {
+    content: ''; width: 5px; height: 9px;
+    border-right: 2px solid white; border-bottom: 2px solid white;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .task-text {
+    flex: 1; font-family: 'Fraunces', Georgia, serif;
+    font-size: 14.5px; line-height: 1.5; color: var(--text);
+    margin: 0; transition: color 0.2s ease;
+  }
+  .task.done .task-text {
+    color: var(--text-faint);
+    text-decoration: line-through; text-decoration-thickness: 0.5px;
+    text-decoration-color: var(--text-faint);
+  }
+  .task-tags { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; align-items: flex-end; }
+  .tag {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9.5px; padding: 2px 7px; border-radius: 4px;
+    letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;
+    white-space: nowrap;
+  }
+  .tag-priority { background: var(--tag-priority-bg); color: var(--tag-priority-fg); }
+  .tag-visa { background: var(--tag-visa-bg); color: var(--tag-visa-fg); }
+  .tag-research { background: var(--tag-research-bg); color: var(--tag-research-fg); }
+  .tag-done { background: var(--tag-done-bg); color: var(--tag-done-fg); }
+
+  .footer {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 24px; padding-top: 20px;
+    border-top: 0.5px solid var(--line);
+  }
+  .footer button {
+    background: var(--bg-2); border: 0.5px solid var(--line-2); color: var(--text-dim);
+    padding: 8px 14px; border-radius: 8px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
+    transition: all 0.15s ease;
+  }
+  .footer button:hover { color: var(--text); border-color: var(--text-dim); background: var(--bg-3); }
+  .footer button.danger:hover { color: var(--bad); border-color: var(--bad); }
+  .footer-meta {
+    margin-left: auto; font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; color: var(--text-faint); align-self: center; letter-spacing: 0.04em;
+  }
+
+  .toast {
+    position: fixed; bottom: calc(16px + env(safe-area-inset-bottom));
+    left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: var(--bg);
+    padding: 10px 18px; border-radius: 999px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px; letter-spacing: 0.05em;
+    opacity: 0; pointer-events: none; transition: all 0.3s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3); z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .app { padding: 18px 14px 80px; }
+    .hero { padding: 22px 20px 18px; border-radius: 20px; }
+    .phase-head { padding: 14px 14px; gap: 12px; }
+    .phase-name { font-size: 15.5px; }
+    .tasks-inner { padding: 4px 14px 14px; }
+    .tag { font-size: 9px; }
+    .task-text { font-size: 13.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="header-top">
+      <span>Personal Tracker · v3</span>
+      <button id="theme-toggle" title="Toggle theme">◐ theme</button>
+    </div>
+    <h1>Himanshu's <em>journey</em>, mapped</h1>
+    <p class="subtitle">MS Biotechnology · UNH Manchester · UNH ID 967086971 · 2026 → 2031</p>
+  </header>
+
+  <section class="hero">
+    <div class="hero-stats">
+      <div class="hero-pct" id="big-pct">0<sup>%</sup></div>
+      <div><div class="hero-frac" id="frac">0 / 99 tasks complete</div></div>
+    </div>
+    <div class="hero-bar"><div class="hero-bar-fill" id="big-fill" style="width: 0%;"></div></div>
+    <div class="phase-pills" id="pills"></div>
+  </section>
+
+  <section class="phases" id="phases"></section>
+
+  <footer class="footer">
+    <button onclick="expandAll()">⌄ expand all</button>
+    <button onclick="collapseAll()">⌃ collapse all</button>
+    <button onclick="exportData()">↓ export json</button>
+    <button onclick="importData()">↑ import json</button>
+    <button class="danger" onclick="resetAll()">✕ reset</button>
+    <span class="footer-meta" id="last-saved">never saved</span>
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const PHASES = [
+  {
+    id: 'p1', name: 'Decision locked — UNH Manchester', dates: 'Apr → May 2026', color: '#1d9e75',
+    anchor: 'Decision made. UNH Manchester, Fall 2026. Goal: finalise admin, maximise funding, close open loops.',
+    tasks: [
+      { id: 't101', tags: ['done'], text: 'Enrolled at UNH Manchester — MS Biotechnology: Industrial & Biomedical Sciences (ID: 967086971)' },
+      { id: 't102', tags: ['done'], text: 'Manchester Innovation Award confirmed: $4,000 total ($1,000/semester) — maintained with 3.0+ GPA, B- or above in all courses' },
+      { id: 't103', tags: ['priority'], text: 'Email grad official: request scholarship revision — attach Tufts 45% counter-offer formally in writing' },
+      { id: 't104', tags: ['priority'], text: 'Apply to Prodigy Finance for provisional loan offer — prodigyfinance.com → UNH Manchester MS Biotech (UNH tie-up confirmed)' },
+      { id: 't105', tags: ['priority'], text: 'Pull fresh bank statements (liquid funds, less than 6 months old) for I-20 financial review' },
+      { id: 't106', text: 'Request formal scholarship award letter from UNH (Manchester Innovation Award) for I-20 submission' },
+      { id: 't107', text: 'Decline Tufts, Northeastern, Temple, Drexel formally — free your seat for others' },
+      { id: 't108', text: 'Confirm UNH.edu email activation timeline with IT helpdesk (it.helpdesk@unh.edu) — typically 2–4 weeks post-enrollment steps' }
+    ]
+  },
+  {
+    id: 'p2', name: 'Visa — I-20 & F-1 stamping', dates: 'Apr → Jul 2026', color: '#d75050',
+    anchor: 'Goal: F-1 visa stamped well before mid-August orientation. Every day of delay is a day lost in the appointment queue.',
+    tasks: [
+      { id: 't201', tags: ['done'], text: 'OISS I-20 eForm login received — University ID: 967086971 | PIN: 13207264' },
+      { id: 't202', tags: ['done'], text: 'Passport dispatched — awaiting SMS/email notification for receipt' },
+      { id: 't203', tags: ['visa', 'priority'], text: 'Passport in hand: verify name, DOB, expiry (must be valid through at least March 2028). Photograph bio-data page immediately.' },
+      { id: 't204', tags: ['visa', 'priority'], text: 'Complete OISS eForm the same day passport arrives — login at Chrome/Firefox only. Upload: passport scan, admission letter, bank statements, scholarship letter.' },
+      { id: 't205', tags: ['done'], text: 'Transcripts requested — KC College email sent to office@kccollege.edu.in (CC: shekhar.shishupal@kccollege.edu.in)' },
+      { id: 't206', tags: ['visa', 'priority'], text: "Send Xavier's transcript email — draft saved in Gmail. To: registrar@xaviers.edu | unhm.gradcenter@unh.edu | CC: grad.school@unh.edu & oiss@unh.edu" },
+      { id: 't207', tags: ['visa'], text: 'Receive I-20 from UNH OISS (7–10 business days after eForm submission) — sign immediately in the box on page 1' },
+      { id: 't208', tags: ['visa', 'priority'], text: 'Pay SEVIS I-901 fee ($350) at fmjfee.com — save receipt, required at visa interview' },
+      { id: 't209', tags: ['visa'], text: 'Complete DS-160 at ceac.state.gov — upload photo per US embassy spec, print confirmation barcode' },
+      { id: 't210', tags: ['visa', 'priority'], text: 'Book F-1 visa appointment at Mumbai Consulate (BKC) via ustraveldocs.com — pay MRV fee $185. Book as early as possible, slots fill fast.' },
+      { id: 't211', tags: ['visa'], text: 'Prepare visa interview folder: I-20 (signed), DS-160 confirmation, admission letter, SEVIS receipt, 3-month bank statements, scholarship letter, academic transcripts, ties-to-India proof' },
+      { id: 't212', tags: ['visa'], text: 'Update vaccinations (MMR required at UNH); get medical records with English translations from Indian doctor' },
+      { id: 't213', text: 'Set up forex card or international wire plan; carry $1,500–2,000 USD equivalent emergency cash' }
+    ]
+  },
+  {
+    id: 'p3', name: 'Pre-arrival outreach', dates: 'Apr → Aug 2026', color: '#378add',
+    anchor: 'Goal: arrive at UNH with warm faculty contacts, a co-op pipeline started, and your name already known. Run this in parallel with visa steps.',
+    tasks: [
+      { id: 't301', tags: ['done'], text: 'Dr. Won Hyuk Suh (WonHyuk.Suh@unh.edu): emailed re summer 2026 RA — replied, invited into PSCL course Fall 2026. Warm relationship established.' },
+      { id: 't302', tags: ['done'], text: 'Jenna Pelletier (BIC Student Ambassador): warm response received — offered personal BIC lab tour. Connected on LinkedIn.' },
+      { id: 't303', tags: ['done'], text: "Commented on Dr. Suh's GRC presentation LinkedIn post — named all student presenters by name. Visible to entire current lab cohort." },
+      { id: 't304', tags: ['priority'], text: 'Send Batch 1 email — Dr. Kyle MacLea (Kyle.MacLea@unh.edu): program coordinator, bioinformatics overlap, strategic gateway for RA referrals' },
+      { id: 't305', tags: ['priority'], text: 'Send Batch 1 email — ARMI/BioFabUSA (info@armiusa.org): direct co-op pipeline, ask for BIC student placement contact' },
+      { id: 't306', tags: ['priority'], text: 'Reply to Jenna Pelletier: confirm BIC tour (July/August visit or Day 1 September). Ask specifically about co-op Boston-area placement rates for international students.' },
+      { id: 't307', text: 'Send Batch 2 email — Dr. Mark Scimone (Mark.Scimone@unh.edu): 3D cell models, fluorescence imaging, actively mentors MS students' },
+      { id: 't308', text: 'Send Batch 2 email — Dr. Kristen Johnson: transcriptomics, cancer omics, dry lab overlap' },
+      { id: 't309', text: 'Connect with Trinity Minard on LinkedIn (TA for AT course, Suh Lab student — your future labmate and first point of contact inside the lab)' },
+      { id: 't310', text: 'Connect with 5 Indian-origin UNH MS Biotech alumni on LinkedIn (search: "UNH Manchester Biotechnology") — use Template A message' },
+      { id: 't311', text: 'Apply to Lonza Portsmouth via careers page — R&D automation roles, 45 min from campus; ask Kyle MacLea for direct intro' },
+      { id: 't312', text: 'Apply / connect at Life Biosciences (Cambridge MA) — partial epigenetic reprogramming, Yamanaka-based, FDA IND cleared Jan 2026' },
+      { id: 't313', text: 'Follow NewLimit scientists on LinkedIn — engage with published papers before connecting; remote-first, perfect scRNA-seq + epigenetics fit' },
+      { id: 't314', text: 'Apply to IUSSTF fellowship at iusstf.org — Indo-US research fellowships $3–8k, check current cycle deadline' },
+      { id: 't315', text: "Learn Opentrons OT-2 Python API via simulator (opentrons.com/protocols) — Dr. Suh's PSCL uses Opentrons automation; knowing it before Day 1 is a significant edge" },
+      { id: 't316', text: 'Read SCTi003-A iPSC protocols from STEMCELL Technologies — this is the exact cell line used in PSCL Fall 2026' },
+      { id: 't317', tags: ['priority'], text: 'Plan campus visit to Manchester: target July or early August for BIC tour with Jenna + meet Raymond Miller (BIC lab ops manager)' }
+    ]
+  },
+  {
+    id: 'p4', name: 'Pre-departure & arrival', dates: 'Jul → Aug 2026', color: '#3b6d11',
+    anchor: 'Goal: arrive at Manchester by Aug 10–12, settled and ready for mandatory International Orientation mid-August. Program starts Aug 31.',
+    tasks: [
+      { id: 't401', tags: ['priority'], text: 'Apply for SNHU Hampton Hall transitional housing — UNH Manchester partner residence, cheapest option, student community; limited space' },
+      { id: 't402', text: 'Scout permanent housing options: Heritage at the River (~$1,500–1,800/mo), Colonial Village (~$1,200–1,500), or walkable apartments at 1200 Elm St' },
+      { id: 't403', text: 'Book flight only after visa is stamped — one-way is fine. Target arrival Manchester: August 10–12, 2026' },
+      { id: 't404', text: 'Pack essentials: formal wear for interviews, lab coat, prescription meds with doctor letters, original certificates + 2 photocopies each, 2 passport photos' },
+      { id: 't405', text: 'Join UNH Manchester WhatsApp/Facebook international student group (link in OISS welcome email)' },
+      { id: 't406', tags: ['priority'], text: 'Attend mandatory International Orientation mid-August — includes OISS check-in, campus tour, DSO meeting, advisor sessions. Non-optional.' },
+      { id: 't407', text: 'Open US bank account on arrival (Chase or Bank of America — international student friendly with I-20 + passport). Set up Mint Mobile SIM (cheapest prepaid).' },
+      { id: 't408', text: 'Get Concord Coach Lines app — Manchester to Boston South Station, ~$15–20 each way, ~60 min, up to 27 trips/day. Your Boston access lifeline.' }
+    ]
+  },
+  {
+    id: 'p5', name: 'Semester 1 — foundation', dates: 'Aug → Dec 2026', color: '#7f77dd',
+    anchor: "Goal: register strong, lock in Dr. Suh's course, build campus presence, formalise at least one faculty research relationship.",
+    tasks: [
+      { id: 't501', tags: ['priority'], text: 'Register for BIOT 772/872 (Pluripotent Stem Cell Lab — PSCL) with Dr. Suh — Fall 2026 only offering. Dr. Suh personally invited you. Use SCTi003-A iPSCs, Opentrons, Revolve microscope, qPCR, RNA-seq.' },
+      { id: 't502', tags: ['priority'], text: 'Register for core: BIOT 877 (Molecular Biology + Lab), BIOT 853 (Cell Culture + Lab), BIOT 866 (Protein & Immunological Methods + Lab)' },
+      { id: 't503', text: 'Register for BIOT 825 (Biotech Products & Regulation) — covers FDA product lifecycle, essential for pharma/biotech industry roles' },
+      { id: 't504', text: 'Consider BIOT 855 (Advanced Therapies — gene, cell, mRNA) — directly maps to CAR-T and epigenetics background' },
+      { id: 't505', tags: ['priority'], text: 'Book BIC lab tour with Jenna Pelletier Week 1 — meet Raymond Miller (lab ops manager), see the equipment you will be working with' },
+      { id: 't506', text: 'Set up Handshake profile on UNH career platform (manchester.unh.edu/careers) — complete to 100%, upload US-format resume' },
+      { id: 't507', text: 'Convert resume to US format: 1 page, no photo, no DOB, no marital status. LinkedIn headline rewrite to match.' },
+      { id: 't508', text: 'Apply for SSN once you have an on-campus job offer or CPT/co-op authorization from DSO' },
+      { id: 't509', tags: ['priority'], text: 'Formalise RA or volunteer lab relationship with Dr. Suh or Dr. MacLea — the PSCL course is your entry point into Suh Lab. Express interest in continuing beyond the course.' },
+      { id: 't510', text: 'Attend BIC events and ARMI networking visits — introduce yourself to ARMI member-company reps when they visit campus' },
+      { id: 't511', text: 'Ask Dr. Suh about NIH supplement funding availability: "Do you have active NIH funding (R15EB036822-01) that could support an RA beyond the course?" — he has the 2024–27 NIBIB grant.' },
+      { id: 't512', text: 'Maintain GPA ≥3.5 — biotech employers and STEM OPT sponsors care about this. B- minimum in all courses to keep scholarship.' },
+      { id: 't513', tags: ['research'], text: 'Start Ginkgo biloba manuscript submission pipeline — Journal of Biomedical Science (IF 12.1, APC waived). Second publication strengthens O-1A and EB-2 NIW groundwork.' }
+    ]
+  },
+  {
+    id: 'p6', name: 'Semester 2 — co-op hunt', dates: 'Jan → May 2027', color: '#ef9f27',
+    anchor: 'Goal: secure your Fall 2027 co-op placement. This is the most critical window of the entire program. Start Jan 1, not April.',
+    tasks: [
+      { id: 't601', tags: ['priority'], text: 'Apply to co-op positions from Jan 1 — ARMI/BioFabUSA member companies, Lonza Portsmouth, ElevateBio, Takeda, Vericel, Adeptrix, Life Biosciences' },
+      { id: 't602', tags: ['priority'], text: 'Apply to summer 2027 internships as CPT backup — even 10-week placements count as US industry experience on resume' },
+      { id: 't603', text: 'Attend every UNH career fair and ARMI networking event; LinkedIn-connect with reps within 24 hours, personalised note each time' },
+      { id: 't604', text: 'Book 2 mock interviews with UNH career services before any live interview — practice technical questions from your core courses' },
+      { id: 't605', text: 'Technical interview prep: cell culture, PCR, Western blot, ELISA, flow cytometry, RNA isolation — your course material is your interview material' },
+      { id: 't606', tags: ['priority'], text: 'Lock co-op offer by April 30; sign co-op agreement with UNH co-op coordinator. Submit CPT authorization through DSO (takes 2–3 weeks).' },
+      { id: 't607', tags: ['research'], text: 'Begin BIOT 893 directed research (2 cr) with chosen faculty advisor — keep it moving alongside coursework; this becomes your research credential' },
+      { id: 't608', text: 'Commute to Boston for at least 2 biotech networking events this semester — Kendall Square events, MassBio, ARMI-affiliated gatherings' }
+    ]
+  },
+  {
+    id: 'p7', name: 'Co-op period', dates: 'Summer → Fall 2027', color: '#0f6e56',
+    anchor: 'Goal: turn this 6-month placement into a full-time return offer. Treat every day as a 6-month interview.',
+    tasks: [
+      { id: 't701', tags: ['priority'], text: 'Day 1 mindset: you are being evaluated for a full-time role from the moment you walk in. Exceed expectations on every deliverable, no exceptions.' },
+      { id: 't702', text: 'Keep a daily achievements log — specific outputs, experiments completed, techniques used. You will need this for resume, BIOT 893 report, and future interviews.' },
+      { id: 't703', text: 'Network internally: meet 2–3 new people per week across teams. Ask about their roles, how they got there, what skills they wish they had.' },
+      { id: 't704', text: 'Mid-coop check-in with UNH faculty advisor; document any course-relevant work for BIOT 893 credit requirements' },
+      { id: 't705', tags: ['priority'], text: 'By co-op month 4, ask manager directly: "What would a full-time role here look like, and what would it take to get there?"' },
+      { id: 't706', text: 'Get verbal commitment from manager + 2 peers to provide LinkedIn recommendations before your last week — follow up in writing' },
+      { id: 't707', tags: ['research'], text: 'Complete BIOT 893 final deliverable (poster, paper, or written report) — this is your second research credential alongside the published WJBPHS paper' },
+      { id: 't708', tags: ['research'], text: 'If epigenetic reprogramming or longevity biology is involved in co-op work — document everything. This feeds your startup IP groundwork and O-1A/EB-2 NIW case.' }
+    ]
+  },
+  {
+    id: 'p8', name: 'Final semester & graduation', dates: 'Jan → May 2028', color: '#185fa5',
+    anchor: 'Goal: graduate on schedule, OPT EAD in hand before May 2028, return offer confirmed or active FT applications running.',
+    tasks: [
+      { id: 't801', tags: ['priority'], text: 'Apply for OPT EAD 90 days before graduation (Feb 2028) — do NOT miss this window. Submit through DSO with I-765 + $410 fee + I-20 + photos.' },
+      { id: 't802', text: 'Complete remaining required core courses + electives to hit exactly 30 credits. Use the course planner widget to verify before registering.' },
+      { id: 't803', tags: ['priority'], text: 'If co-op return offer not yet confirmed: begin active FT applications in Jan 2028 — Life Biosciences, NewLimit, Cellarity, Lonza, ARMI member companies' },
+      { id: 't804', text: 'Update LinkedIn with co-op title + 3 measurable achievements. Request 2–3 written LinkedIn recommendations before leaving placement.' },
+      { id: 't805', text: 'Practice technical + behavioral interviews weekly — keep a running doc of company-specific notes and tailored answers' },
+      { id: 't806', tags: ['priority'], text: 'Receive EAD card — do NOT start FT work without it in hand. EAD start date must match or precede your first day of employment.' },
+      { id: 't807', tags: ['research'], text: 'File ORCID updates: add DOI 10.30574/wjbphs.2025.24.1.0914, add Ginkgo biloba manuscript (if published), employment history, set public. ORCID: 0009-0009-3035-0531' },
+      { id: 't808', text: 'Attend graduation ceremony. Collect official transcript + diploma. Order extra certified transcripts — 3 minimum.' }
+    ]
+  },
+  {
+    id: 'p9', name: 'OPT Year 1', dates: 'May 2028 → May 2029', color: '#3c3489',
+    anchor: 'Goal: stay employed, stay under 90-day unemployment cap, track everything for STEM OPT extension.',
+    tasks: [
+      { id: 't901', tags: ['priority'], text: 'Report employment to DSO within 10 days of starting any job — update SEVP portal. Non-compliance jeopardises visa status.' },
+      { id: 't902', text: 'Track unemployment days carefully — 90-day total cap during standard OPT is enforced. Do not let this creep up passively.' },
+      { id: 't903', text: 'Negotiate first FT salary with data: use levels.fyi + Glassdoor + Glassdoor for biotech roles in your city. You have a published paper, co-op experience, and a niche skill set — use them.' },
+      { id: 't904', text: 'File 2028 US tax return by April 15, 2029 — F-1 students are non-resident aliens for first 5 years. Use Sprintax (built for international students).' },
+      { id: 't905', tags: ['priority'], text: 'Confirm employer is E-Verify enrolled (required for STEM OPT extension). Check via E-Verify company search before accepting any offer.' },
+      { id: 't906', tags: ['priority'], text: 'Apply for 24-month STEM OPT extension 90 days before standard OPT expires — Feb 2029. Submit I-765 + I-983 training plan through DSO.' },
+      { id: 't907', text: 'Complete I-983 training plan with employer — document specific learning objectives tied to your MS Biotech degree field. Employer must sign.' }
+    ]
+  },
+  {
+    id: 'p10', name: 'STEM OPT + longevity startup vision', dates: 'May 2029 → May 2031', color: '#633806',
+    anchor: 'Goal: 3-year OPT window complete. By end of STEM OPT, either launch the longevity startup, pivot via EB-2 NIW / O-1A, or return to India with strong US credentials.',
+    tasks: [
+      { id: 't1001', text: 'Submit STEM OPT 6-month and 12-month employer evaluation reports on time (employer co-signs each)' },
+      { id: 't1002', tags: ['research'], text: 'Build O-1A groundwork during STEM OPT: C4 (peer review service for journals), C5 (original contributions — epigenetic reprogramming work), C7 (critical role at ARMI-affiliated or NIH-funded org). Target 4–5 criteria met by 2029.' },
+      { id: 't1003', tags: ['research'], text: 'File provisional US patent on microbial consortia degradation system — one-year grace period from WJBPHS publication (DOI: 10.30574/wjbphs.2025.24.1.0914). ~$320 micro-entity fee.' },
+      { id: 't1004', tags: ['research'], text: 'Publish at least 1 more paper during STEM OPT period — target Aging Cell, Nature Aging, or Epigenetics. This is the single strongest EB-2 NIW and O-1A lever.' },
+      { id: 't1005', tags: ['priority'], text: 'Longevity startup groundwork: define the specific epigenetic reprogramming application (anti-aging therapeutics? diagnostics? bioremediation?), file IP, identify co-founders' },
+      { id: 't1006', text: 'EB-2 NIW path: document national interest framing around longevity/epigenetic reprogramming. Map your work to population health, aging demographics, healthcare cost reduction. This is your primary long-term immigration route.' },
+      { id: 't1007', text: 'O-1A bridge: O-1A does not require employer sponsorship. If startup is launched, you are your own petitioner. File with an immigration attorney who specialises in science/tech O-1As.' },
+      { id: 't1008', text: "If returning to India: target Biocon, Syngene, Dr. Reddy's, or Longevity India (IISc connection) — your US industry experience + publication record is a tier above average Indian biotech candidates." },
+      { id: 't1009', text: 'Jackson Laboratory (JAX) long-game: Associate Scientist level realistic by 2030–31. Skill gaps to close: iPSC/organoid culture, HCS/HTS, liquid handling automation, IHC/tissue sectioning, spatial transcriptomics (Xenium/Visium), LIMS/ELN.' }
+    ]
+  }
+];
+
+const STORAGE_KEY = 'himanshu-journey-tracker-v3';
+const THEME_KEY = 'himanshu-journey-theme';
+let state = {};
+let openPhases = new Set();
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = parsed.tasks || {};
+      if (parsed.openPhases) openPhases = new Set(parsed.openPhases);
+    } else {
+      // First load: pre-check tasks tagged 'done' from data
+      PHASES.forEach(p => p.tasks.forEach(t => {
+        if (t.tags && t.tags.includes('done')) state[t.id] = true;
+      }));
+      openPhases = new Set(['p1', 'p2', 'p3']);
+      save();
+    }
+  } catch (e) { console.warn('Load failed', e); }
+
+  const theme = localStorage.getItem(THEME_KEY);
+  if (theme) document.documentElement.setAttribute('data-theme', theme);
+}
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      tasks: state,
+      openPhases: Array.from(openPhases),
+      savedAt: new Date().toISOString()
+    }));
+    updateLastSaved();
+  } catch (e) { toast('Save failed — storage might be full'); }
+}
+
+function updateLastSaved() {
+  const el = document.getElementById('last-saved');
+  if (!el) return;
+  const now = new Date();
+  const t = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  el.textContent = `saved ${t}`;
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function toggleTask(id) { state[id] = !state[id]; save(); render(); }
+function togglePhase(id) {
+  if (openPhases.has(id)) openPhases.delete(id);
+  else openPhases.add(id);
+  save(); render();
+}
+function expandAll() { PHASES.forEach(p => openPhases.add(p.id)); save(); render(); }
+function collapseAll() { openPhases.clear(); save(); render(); }
+
+function resetAll() {
+  if (!confirm('Reset all progress? This cannot be undone unless you exported your data.')) return;
+  state = {};
+  PHASES.forEach(p => p.tasks.forEach(t => {
+    if (t.tags && t.tags.includes('done')) state[t.id] = true;
+  }));
+  save(); render();
+  toast('reset to baseline');
+}
+
+function exportData() {
+  const data = {
+    tasks: state, openPhases: Array.from(openPhases),
+    savedAt: new Date().toISOString(), version: 3
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `himanshu-journey-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('exported — keep this safe');
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'application/json';
+  input.onchange = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.tasks) state = data.tasks;
+        if (data.openPhases) openPhases = new Set(data.openPhases);
+        save(); render();
+        toast('imported — welcome back');
+      } catch { toast('invalid file'); }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+
+function tagsHtml(tags) {
+  if (!tags || !tags.length) return '';
+  return '<div class="task-tags">' + tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('') + '</div>';
+}
+
+function render() {
+  let totalTasks = 0, doneTasks = 0;
+  PHASES.forEach(p => p.tasks.forEach(t => {
+    totalTasks++;
+    if (state[t.id]) doneTasks++;
+  }));
+  const pct = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0;
+  document.getElementById('big-pct').innerHTML = pct + '<sup>%</sup>';
+  document.getElementById('big-fill').style.width = pct + '%';
+  document.getElementById('frac').textContent = `${doneTasks} / ${totalTasks} tasks complete`;
+
+  const pills = document.getElementById('pills');
+  pills.innerHTML = PHASES.map(p => {
+    const total = p.tasks.length;
+    const done = p.tasks.filter(t => state[t.id]).length;
+    const isComplete = done === total;
+    return `<span class="pill ${isComplete ? 'complete' : ''}">
+      <span class="pill-dot" style="background: ${p.color};"></span>
+      ${done}/${total} ${shortName(p.name)}
+    </span>`;
+  }).join('');
+
+  const phasesEl = document.getElementById('phases');
+  phasesEl.innerHTML = PHASES.map(p => {
+    const total = p.tasks.length;
+    const done = p.tasks.filter(t => state[t.id]).length;
+    const phasePct = total ? Math.round((done / total) * 100) : 0;
+    const isOpen = openPhases.has(p.id);
+    const isComplete = done === total && total > 0;
+
+    const tasksHtml = p.tasks.map(t => {
+      const checked = state[t.id];
+      return `<div class="task ${checked ? 'done' : ''}" onclick="toggleTask('${t.id}')">
+        <div class="cb ${checked ? 'checked' : ''}"></div>
+        <p class="task-text">${escapeHtml(t.text)}</p>
+        ${tagsHtml((t.tags || []).filter(tg => tg !== 'done'))}
+      </div>`;
+    }).join('');
+
+    return `<div class="phase ${isComplete ? 'complete' : ''}">
+      <div class="phase-head" onclick="togglePhase('${p.id}')">
+        <div class="phase-marker" style="background: ${p.color};"></div>
+        <div class="phase-info">
+          <h3 class="phase-name">${escapeHtml(p.name)}</h3>
+          <span class="phase-dates">${escapeHtml(p.dates)}</span>
+        </div>
+        <div class="phase-meta">
+          <span class="phase-pct">${phasePct}%</span>
+          <span class="phase-count ${isComplete ? 'complete' : ''}">${done}/${total}</span>
+          <svg class="chev ${isOpen ? 'open' : ''}" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M4 2 L8 6 L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tasks ${isOpen ? 'open' : ''}">
+        <div class="tasks-inner">
+          <p class="anchor">${escapeHtml(p.anchor)}</p>
+          ${tasksHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function shortName(name) {
+  const cleaned = name.replace(/—.*/, '').trim();
+  return cleaned.length > 16 ? cleaned.slice(0, 14) + '…' : cleaned;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem(THEME_KEY, next);
+});
+
+load();
+render();
+updateLastSaved();
+</script>
+</body>
+</html>
